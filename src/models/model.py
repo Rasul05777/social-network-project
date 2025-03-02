@@ -14,13 +14,13 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     email: Mapped[str] = mapped_column(String(50), nullable=False, unique=True) 
     password: Mapped[str] = mapped_column(nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))    
     
     posts: Mapped[list["Post"]] = relationship(back_populates="author")
     comment: Mapped[list["Comment"]] = relationship(back_populates="user")
     likes: Mapped[list["Like"]] = relationship(back_populates="user")
-    following: Mapped[list["Follow"]] = relationship(foreign_keys=["Follow.follower_id"], back_populates="follower") # Подписка пользователя на других
-    followers: Mapped[list["Follow"]] = relationship(foreign_keys=["Follow.followed_id"], back_populates="followed") #  Подписки других на пользователя
+    following: Mapped[list["Follow"]] = relationship("Follow", foreign_keys="[Follow.follower_id]", back_populates="follower") # Подписка пользователя на других
+    followers: Mapped[list["Follow"]] = relationship("Follow", foreign_keys="[Follow.followed_id]", back_populates="followed") #  Подписки других на пользователя
     
     
 class Post(Base):
@@ -30,19 +30,18 @@ class Post(Base):
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     tittle: Mapped[str] = mapped_column(String(30), nullable=True)
     context: Mapped[str] = mapped_column(String)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))    
 
     author: Mapped["User"] = relationship(back_populates="posts") 
     comments: Mapped[list["Comment"]] = relationship(back_populates="post")
     likes: Mapped[list["Like"]] = relationship(back_populates="post")
-    follows: Mapped[list["Follow"]] = relationship(back_populates="follower")
 
 
 class Comment(Base):
     __tablename__ = "comments"
     id: Mapped[int] = mapped_column(primary_key=True)
     text: Mapped[str] = mapped_column(String(300), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))    
     
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
@@ -68,6 +67,7 @@ class Follow(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     follower_id: Mapped[int] = mapped_column(ForeignKey("users.id")) # ID Пользователя который подписывается
     followed_id: Mapped[int] = mapped_column(ForeignKey("users.id")) # ID Пользоваетля на которого подписываются
-    
+        
     follower: Mapped["User"] = relationship(foreign_keys=[follower_id], back_populates="following")
     followed: Mapped["User"] = relationship(foreign_keys=[followed_id], back_populates="followers")
+    

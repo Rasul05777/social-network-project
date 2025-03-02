@@ -1,12 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from datetime import datetime
 
 
 
+
+
 class CommentCreate(BaseModel):
-    text: str
-    post_id: int # или добавить PostResponse
+    text: str = Field(..., min_length=1)
+    post_id: int 
     
     class Config:
         json_schema_extra = {

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from src.schemas.schemas_user import UserResponse
 
 class PostCreate(BaseModel):
     tittle: str | None
-    context: str
+    context: str = Field(..., min_length=1)
     
     class Config:
             json_schema_extra = {
@@ -24,7 +24,7 @@ class PostResponse(BaseModel):
     tittle: str | None
     context: str
     created_at: datetime
-    author_id: UserResponse # Или же просто author_id
+    author_id: int 
     
     class Config:
         from_attributes = True

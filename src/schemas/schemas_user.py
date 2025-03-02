@@ -1,13 +1,12 @@
 from pydantic import BaseModel, EmailStr
 
+from datetime import datetime
 
 
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
-    followers_count: int | None
-    following_count: int | None
     
     class Config:
         json_schema_extra = {
@@ -15,8 +14,6 @@ class UserCreate(BaseModel):
                 "username": "john_doe",
                 "email": "john.doe@example.com",
                 "password": "securepassword123",
-                "followers_count": 10,
-                "following_count": 5
             }
         }
     
@@ -25,9 +22,9 @@ class UserResponse(BaseModel):
     id: int
     username: str
     email: str
-    created_at: str
-    followers_count: int | None
-    following_count: int | None
+    created_at: datetime
+    followers_count: int | None=None
+    following_count: int | None=None
     
     class Config:
         from_attributes = True
@@ -41,3 +38,4 @@ class UserResponse(BaseModel):
                 "following_count": 5
             }
         }
+    
