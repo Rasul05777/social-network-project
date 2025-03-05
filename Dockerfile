@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Копируем requirements.txt и устанавливаем зависимости
-COPY requirements.txt .
+COPY req.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем весь проект
