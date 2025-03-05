@@ -4,6 +4,9 @@ from src.api.endpoints.users import router as router_user
 from src.api.endpoints.posts import router as router_post
 from src.api.endpoints.comments import router as router_comment
 from src.api.endpoints.likes import router as router_like
+from src.api.endpoints.follows import router as router_follow
+from src.api.endpoints.auth import router as router_auth
+
 
 
 
@@ -17,8 +20,9 @@ app = FastAPI()
 
 app.add_exception_handler(AppExeption, error_handler())
 
+app.include_router(router_auth)
 app.include_router(router_user)
 app.include_router(router_post)
 app.include_router(router_comment)
 app.include_router(router_like)
-
+app.include_router(router_follow)

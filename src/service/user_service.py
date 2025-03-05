@@ -6,12 +6,14 @@ from ..models.model import User
 
 from ..schemas.schemas_user import UserCreate, UserResponse
 
-from ..core.utils import get_password_hash
+from ..core.utils import get_password_hash, create_token
 
 from ..errors.model_error import AppExeption
 
 
-async def create_user(db: AsyncSession, user_create: UserCreate) -> UserResponse:
+
+
+async def create_user(db: AsyncSession, user_create: UserCreate) -> dict:
     existing_user = await db.execute(select(User).where((User.email==user_create.email)|(User.username==user_create.username)))
     result = existing_user.scalar()
     if result:
@@ -32,8 +34,15 @@ async def create_user(db: AsyncSession, user_create: UserCreate) -> UserResponse
     await db.commit()
     await db.refresh(user)
     
-    return UserResponse.model_validate(user)
-
+    access_token = create_token(
+        data={"sub": str(user.id)}
+    )
+    
+    return { 
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": UserResponse.model_validate(user),
+    }
 async def get_user_by_id(db: AsyncSession, user_id: int) -> UserResponse:
     result = await db.execute(
         select(User)

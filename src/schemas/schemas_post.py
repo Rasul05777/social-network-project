@@ -13,7 +13,7 @@ class PostCreate(BaseModel):
     class Config:
             json_schema_extra = {
                 "example": {
-                    "title": "My First Post",
+                    "tittle": "My First Post",
                     "context": "This is the content of my post."
                 }
             }        
@@ -31,7 +31,7 @@ class PostResponse(BaseModel):
         json_schema_extra = {
             "example": {
                 "id": 1,
-                "title": "My First Post",
+                "tittle": "My First Post",
                 "context": "This is the content of my post.",
                 "created_at": "2025-02-25T12:00:00Z",
             }
